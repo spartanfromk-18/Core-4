@@ -1,0 +1,55 @@
+import React, { createContext, useContext, useState, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import universityPatterns from '../data/university_patterns.json';
+
+export interface ExamContextType {
+  university: string;
+  setUniversity: (uni: string) => void;
+  college: string;
+  setCollege: (col: string) => void;
+  semester: string;
+  setSemester: (sem: string) => void;
+  getAiPromptInstructions: () => string[];
+}
+
+const ExamContext = createContext<ExamContextType | undefined>(undefined);
+
+export const ExamProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [university, setUniversity] = useState<string>('');
+  const [college, setCollege] = useState<string>('');
+  const [semester, setSemester] = useState<string>('');
+
+  const getAiPromptInstructions = () => {
+    // 3. Implement a 'Pattern-Match' logic
+    if (university === 'AKTU') {
+      const pattern = (universityPatterns as any).AKTU;
+      if (pattern && pattern.aiInstructions) {
+        return pattern.aiInstructions;
+      }
+    }
+    return [];
+  };
+
+  const value = useMemo(
+    () => ({
+      university,
+      setUniversity,
+      college,
+      setCollege,
+      semester,
+      setSemester,
+      getAiPromptInstructions,
+    }),
+    [university, college, semester]
+  );
+
+  return <ExamContext.Provider value={value}>{children}</ExamContext.Provider>;
+};
+
+export const useExamContext = () => {
+  const context = useContext(ExamContext);
+  if (context === undefined) {
+    throw new Error('useExamContext must be used within an ExamProvider');
+  }
+  return context;
+};

@@ -1,7 +1,4 @@
-# Core-4
-Bridging the Gap in Indian Technical Education.
-
-# 🚀 Core-4: Architecture of Learning
+# Core-4: Architecture of Learning
 **Bridging the Gap between Theory and Logic in Indian Technical Education**
 
 [![Google Solution Challenge 2026](https://img.shields.io/badge/Google-Solution%20Challenge%202026-4285F4?style=for-the-badge&logo=google)](https://developers.google.com/community/gdsc-solution-challenge)
@@ -19,17 +16,20 @@ In the Indian technical education landscape (Tier-2 & Tier-3 cities), students f
 3. **Language Barrier:** Formal English documentation is often intimidating, leading to rote learning (Ratta) instead of understanding.
 
 ## ✨ Key Features
+- **Intelligence Engine:** The core processing unit for semantic queries and data synthesis, integrating Google Gemini 1.5 Flash.
 - **The Sheet-Filler (Exam Mode):** Converts any topic into a 10-mark structured answer with optimized headings and point-wise explanations.
 - **Diagram Architect:** Uses Mermaid.js to generate simple, hand-drawable flowcharts and architecture diagrams for every concept.
 - **Logic Trace Tables:** Instead of just giving code, Core-4 generates step-by-step trace tables (Variable | Value | Output) to teach how logic flows.
-- **Hinglish Analogies:** Uses localized, relatable analogies (e.g., explaining Stacks using local examples) to make concepts stick.
+- **LettaDock:** A specialized interface for university-specific navigation and collection management.
+- **Dynamic Boot Sequence:** A high-fidelity system initialization experience designed for the modern learner.
+- **Hinglish Analogies:** Uses localized, relatable analogies to make concepts stick.
 
 ## 🛠️ Tech Stack
 Core-4 is built using the **Google Ecosystem**:
 - **Frontend:** React.js + TypeScript + Tailwind CSS (Deployed on Firebase Hosting)
 - **AI Engine:** Google Gemini 1.5 Flash (via Google AI Studio/Vertex AI)
 - **Backend:** Firebase (Authentication, Firestore, and Cloud Functions)
-- **IDE & Agentic Workflow:** Antigravity (Google’s AI-first IDE)
+- **Design System:** Custom glassmorphic UI with Framer Motion animations.
 
 ## 🚀 Getting Started
 ### Prerequisites
@@ -39,4 +39,16 @@ Core-4 is built using the **Google Ecosystem**:
 ### Installation
 1. Clone the repository:
    ```bash
-https://github.com/spartanfromk-18
+   git clone https://github.com/spartanfromk-18/Core-4.git
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a `.env` file with your credentials:
+   ```env
+   VITE_GEMINI_API_KEY=your_key
+   ```
+
+## 📜 License
+This project is licensed under the MIT License.

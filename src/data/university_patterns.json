@@ -1,0 +1,9 @@
+{
+  "AKTU": {
+    "markingScheme": [2, 7, 10],
+    "aiInstructions": [
+      "Format for 32-page horizontal answer sheets",
+      "Insert hand-drawable diagrams every 250 words"
+    ]
+  }
+}

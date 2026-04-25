@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // --- Helper Functions ----------------------------------------------------
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() 
+        && request.auth.token.role == 'admin';
+    }
+    
+    function isOwner(uid) {
+      return isAuthenticated() 
+        && request.auth.uid == uid;
+    }
+
+    // --- Universities (Global Read-Only Reference) ---------------------------
+    // Students: READ only. Admins: full WRITE.
+    match /universities/{universityId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+      
+      // Nested university_patterns sub-collection
+      match /university_patterns/{patternId} {
+        allow read: if isAuthenticated();
+        allow write: if isAdmin();
+      }
+    }
+
+    // --- PYQ Database (Read-Only for Students) -------------------------------
+    match /pyq_database/{questionId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // --- User Progress (Owner-Scoped Writes) ---------------------------------
+    // Students can ONLY write to their own progress document.
+    // Admins retain full access for analytics pipelines.
+    match /user_progress/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId)
+        // Prevent students from elevating their own score or admin notes
+        && !request.resource.data.diff(resource.data).affectedKeys()
+            .hasAny(['verified_score', 'admin_notes']);
+      allow delete: if isAdmin();
+
+      // Nested sessions and weak_topics sub-collections are scoped securely under it
+      match /sessions/{sessionId} {
+      	allow read, write: if isOwner(userId) || isAdmin();
+      }
+
+      match /weak_topics/{topicId} {
+      	allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+    
+  }
+}
