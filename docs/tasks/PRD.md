@@ -1,10 +1,10 @@
 # Product Requirements Document (PRD)
 
 ## Project Name
-**Core-4: University Exam Intelligence System**
+**Unsmart: A Professional Way of Smart Study**
 
 ## 1. Executive Summary
-Core-4 is an advanced academic intelligence platform designed to reverse-engineer examination patterns. By aggregating Past Year Questions (PYQs) and integrating Vertex AI semantic searches alongside Gemini 1.5 Pro, the system grades answers and generates "Topper-style" study strategies tailored to specific university syllabi.
+Unsmart is an advanced academic intelligence platform designed to reverse-engineer examination patterns. By aggregating Past Year Questions (PYQs) and integrating Vertex AI semantic searches alongside Gemini 1.5 Pro, the system grades answers and generates "Topper-style" study strategies tailored to specific university syllabi.
 
 ## 2. Core Objectives
 1. **Syllabus Integration (AKTU Focus)**
