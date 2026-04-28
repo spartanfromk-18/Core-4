@@ -13,8 +13,12 @@ export const useSemanticSearch = () => {
     try {
       const data = await executeSemanticSearch(query, universityId, subject);
       setResults(data);
-    } catch (err: any) {
-      setError(err.message || 'An error occurred during search.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An error occurred during search.');
+      }
     } finally {
       setIsSearching(false);
     }

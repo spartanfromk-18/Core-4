@@ -8,6 +8,7 @@ export const useProgress = (uid: string | undefined) => {
 
   useEffect(() => {
     if (!uid) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       return;
     }

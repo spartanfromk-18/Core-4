@@ -20,8 +20,8 @@ export interface University {
  */
 export interface UniversityPattern {
   patternId: string;
-  weightage_map: Record<string, any>;
-  marking_scheme: any;
+  weightage_map: Record<string, unknown>;
+  marking_scheme: unknown;
 }
 
 /**

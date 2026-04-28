@@ -1,30 +1,57 @@
 @import "tailwindcss";
+@import "./styles/theme.css";
 
 @theme {
-  --color-cyber-bg: #050505;
-  --color-cyber-cyan: #06b6d4;
-  --color-cyber-purple: #7c3aed;
+  --font-cabinet: 'Cabinet Grotesk', sans-serif;
+  --font-cormorant: 'Cormorant Garamond', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-ink: #04050a;
+  --color-ink2: #080b14;
+  --color-ink3: #0c1020;
+  --color-surface: #0f1422;
+  --color-surface2: #141929;
+  --color-gold: #c9a84c;
+  --color-gold2: #e8c97a;
+  --color-gold3: #f5e0a8;
+  --color-gold-dim: rgba(201, 168, 76, 0.12);
+  --color-gold-glow: rgba(201, 168, 76, 0.25);
+  --color-ice: #e8f0ff;
+  --color-ice2: #b8caf5;
+  --color-ice-dim: rgba(232, 240, 255, 0.05);
+  --color-accent: #3d6fff;
+  --color-accent2: #6b8fff;
+  --color-red: #ff4d6d;
+  --color-green: #00d68f;
+  --color-text-main: #dce6ff;
+  --color-text2: #8a96b8;
+  --color-text3: #4a5278;
+  --color-border-main: rgba(255, 255, 255, 0.06);
+  --color-border2: rgba(201, 168, 76, 0.2);
+
+  --radius-r: 12px;
+  --radius-r2: 20px;
+  --radius-r3: 32px;
 }
 
 body {
-  background-color: var(--color-cyber-bg);
-  color: #ffffff;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-cabinet);
+  background: var(--color-ink);
+  color: var(--color-text-main);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
   margin: 0;
   padding: 0;
 }
 
-/* Glassmorphism utilities */
-.glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.glass-panel {
-  background: linear-gradient(145deg, rgba(6, 182, 212, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+/* CANVAS TEXTURE */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.6;
+  mix-blend-mode: overlay;
 }

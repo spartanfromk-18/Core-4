@@ -19,16 +19,15 @@ export const ExamProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [college, setCollege] = useState<string>('');
   const [semester, setSemester] = useState<string>('');
 
-  const getAiPromptInstructions = () => {
-    // 3. Implement a 'Pattern-Match' logic
+  const getAiPromptInstructions = React.useCallback(() => {
     if (university === 'AKTU') {
-      const pattern = (universityPatterns as any).AKTU;
+      const pattern = (universityPatterns as Record<string, { aiInstructions?: string[] }>).AKTU;
       if (pattern && pattern.aiInstructions) {
         return pattern.aiInstructions;
       }
     }
     return [];
-  };
+  }, [university]);
 
   const value = useMemo(
     () => ({
@@ -40,12 +39,13 @@ export const ExamProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setSemester,
       getAiPromptInstructions,
     }),
-    [university, college, semester]
+    [university, college, semester, getAiPromptInstructions]
   );
 
   return <ExamContext.Provider value={value}>{children}</ExamContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useExamContext = () => {
   const context = useContext(ExamContext);
   if (context === undefined) {

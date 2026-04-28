@@ -1,0 +1,75 @@
+/* ═══════════════════════════════════════════════
+   AMBIENT BACKGROUND
+═══════════════════════════════════════════════ */
+.ambient{position:fixed;inset:0;z-index:0;overflow:hidden;}
+.amb{position:absolute;border-radius:50%;filter:blur(150px);will-change:transform;}
+.a1{width:800px;height:800px;background:radial-gradient(circle,rgba(61,111,255,0.08) 0%,transparent 70%);top:-300px;right:-100px;animation:float1 25s ease-in-out infinite alternate;}
+.a2{width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%);bottom:-200px;left:-100px;animation:float2 30s ease-in-out infinite alternate;}
+.a3{width:400px;height:400px;background:radial-gradient(circle,rgba(61,111,255,0.05) 0%,transparent 70%);top:50%;left:40%;animation:float1 20s ease-in-out infinite alternate-reverse;}
+@keyframes float1{0%{transform:translate(0,0)}100%{transform:translate(80px,60px)}}
+@keyframes float2{0%{transform:translate(0,0)}100%{transform:translate(-60px,80px)}}
+
+/* ═══════════════════════════════════════════════
+   FEATURE WALL (bento)
+═══════════════════════════════════════════════ */
+.fc{
+  background:var(--color-surface);
+  border:1px solid var(--color-border-main);
+  border-radius:var(--radius-r2);
+  padding:40px;overflow:hidden;position:relative;
+  transition:border-color .4s,transform .4s;
+}
+.fc:hover{border-color:var(--color-border2);transform:translateY(-5px) !important;}
+.fc::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at top left,rgba(201,168,76,0.04) 0%,transparent 60%);
+  opacity:0;transition:opacity .4s;border-radius:var(--radius-r2);
+}
+.fc:hover::before{opacity:1}
+
+.fc-icon{
+  width:44px;height:44px;border-radius:10px;margin-bottom:28px;
+  border:1px solid var(--color-border2);background:var(--color-gold-dim);
+  display:grid;place-items:center;font-size:20px;color: var(--color-gold);
+}
+
+.result-item{
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--color-border-main);border-radius:10px;
+  padding:14px 16px;display:flex;align-items:center;gap:12px;
+  transition:border-color .2s;
+}
+.result-item:hover{border-color:var(--color-border2)}
+
+/* Logic Pulse Border Effect */
+@keyframes logic-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(201, 168, 76, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(201, 168, 76, 0); }
+}
+.logic-pulse {
+  animation: logic-pulse 2s infinite;
+  border-color: var(--color-gold);
+}
+
+/* Boot Sequence Classes */
+.terminal-text {
+  font-family: var(--font-mono);
+  color: var(--color-green);
+  text-shadow: 0 0 8px rgba(0, 214, 143, 0.4);
+}
+
+/* Glass panel */
+.glass-panel {
+  background: rgba(14, 18, 32, 0.85);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  backdrop-filter: blur(40px);
+  box-shadow: 0 60px 120px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Letta Dock Active State */
+.dock-item-active {
+  background: var(--color-gold-dim);
+  border: 1px solid var(--color-border2);
+  color: var(--color-gold);
+}

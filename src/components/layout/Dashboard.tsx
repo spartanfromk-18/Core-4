@@ -1,10 +1,8 @@
 import React from 'react';
 import { useExamContext } from '../../context/ExamContext';
-import { useTheme } from '../../context/ThemeContext';
 
 const Dashboard: React.FC = () => {
   const { university, setUniversity } = useExamContext();
-  const { toggleTheme } = useTheme();
 
   return (
     <div className="min-h-screen p-8 relative overflow-hidden flex flex-col items-center justify-center font-sans tracking-wide">
@@ -24,12 +22,9 @@ const Dashboard: React.FC = () => {
             Core-4
           </h1>
         </div>
-        <button 
-          onClick={toggleTheme}
-          className="px-4 py-2 rounded-full glass text-sm font-medium hover:bg-white/10 transition-all border border-white/5"
-        >
-          Toggle Theme
-        </button>
+        <div className="px-4 py-2 rounded-full glass text-sm font-medium border border-white/5 text-text3 font-mono">
+          Core-4 Online
+        </div>
       </header>
 
       {/* Main Content */}
