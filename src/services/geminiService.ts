@@ -65,20 +65,26 @@ export const streamLogisticsAnalysis = async (
   university: string,
   callbacks: StreamCallbacks,
   mode: AnalysisMode = 'normal',
-  attempt = 1
+  attempt = 1,
+  modelId = 'gemini-1.5-flash'
 ): Promise<{ fullText: string; confidenceScore: number }> => {
   const { onToken, onStall } = callbacks;
 
   try {
-    console.log(`[Core-4] Initiating ${mode} stream with gemini-1.5-flash...`);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    console.log(`[Core-4] Initiating ${mode} stream with ${modelId} (API: v1beta)...`);
+    
+    // Using v1beta explicitly for latest features/model support
+    const model = genAI.getGenerativeModel(
+      { model: modelId },
+      { apiVersion: 'v1beta' }
+    );
+
     const prompt = buildPrompt(query, university, mode, attempt > 1);
     const result = await model.generateContentStream(prompt);
 
     let fullText = '';
     let lastTokenTime = Date.now();
 
-    // Set up stall detector
     const stallTimer = setInterval(() => {
       if (Date.now() - lastTokenTime > STREAM_TIMEOUT_MS) {
         onStall?.();
@@ -95,15 +101,12 @@ export const streamLogisticsAnalysis = async (
 
     clearInterval(stallTimer);
 
-    // Auto-retry if response isn't university-specific (max 2 attempts)
     if (attempt === 1 && !isResponseRelevant(fullText, university)) {
-      console.warn(`[Core-4] Response not university-specific for ${university}. Auto-retrying with refined prompt...`);
-      // Clear current output and retry
+      console.warn(`[Core-4] Response not university-specific. Auto-retrying...`);
       onToken('\n\n> System: Refining query context for ' + university + '...\n\n');
-      return streamLogisticsAnalysis(query, university, callbacks, mode, 2);
+      return streamLogisticsAnalysis(query, university, callbacks, mode, 2, modelId);
     }
 
-    // Extract Confidence Score
     let confidenceScore = 85;
     const match = fullText.match(/Confidence Score:\s*\[?(\d{1,3})\]?/i);
     if (match?.[1]) {
@@ -112,10 +115,19 @@ export const streamLogisticsAnalysis = async (
 
     return { fullText, confidenceScore };
 
-  } catch (error: unknown) {
+  } catch (error: any) {
+    const errorMsg = error?.message || '';
+    console.error(`[Core-4] Engine Error:`, errorMsg);
+
+    // Fallback logic if Flash is unavailable in region or Model ID is invalid
+    if ((errorMsg.includes('404') || errorMsg.includes('not found')) && modelId === 'gemini-1.5-flash') {
+      console.warn(`[Core-4] Model ${modelId} not found. Falling back to gemini-1.5-pro...`);
+      return streamLogisticsAnalysis(query, university, callbacks, mode, attempt, 'gemini-1.5-pro');
+    }
+
     if (error instanceof Error) {
       throw new Error(`System Recovery (Node Congestion): ${error.message}`);
     }
-    throw new Error('System Recovery (Node Congestion): The intelligence engine encountered an unknown error. Please retry.');
+    throw new Error('System Recovery (Node Congestion): The intelligence engine encountered an unknown error.');
   }
 };
