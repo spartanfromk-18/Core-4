@@ -112,7 +112,7 @@ export const streamLogisticsAnalysis = async (
 
     return { fullText, confidenceScore };
 
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error(`System Recovery (Node Congestion): ${error.message}`);
     }

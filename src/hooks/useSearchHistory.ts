@@ -18,7 +18,7 @@ export const useSearchHistory = () => {
     if (storedTraces) {
       try {
         return JSON.parse(storedTraces);
-      } catch (e) {
+      } catch (e: unknown) {
         console.error('Failed to parse logic traces', e);
       }
     }

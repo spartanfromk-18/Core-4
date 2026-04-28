@@ -3,8 +3,8 @@ import { LettaDock } from './LettaDock';
 import { SystemHUD } from './SystemHUD';
 import { ErrorBoundary } from './ErrorBoundary';
 import { useSearchHistory } from '../hooks/useSearchHistory';
-import { streamLogisticsAnalysis, AnalysisMode } from '../services/geminiService';
-import { Terminal, Send, Activity, ShieldAlert, Cpu, Copy, Check, Layout, FileText, Share2 } from 'lucide-react';
+import { streamLogisticsAnalysis, type AnalysisMode } from '../services/geminiService';
+import { Terminal, Send, Activity, ShieldAlert, Cpu, Copy, Check } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 const EngineCore: React.FC = () => {
@@ -71,9 +71,9 @@ const EngineCore: React.FC = () => {
           confidenceScore,
         });
       }
-    } catch (e: unknown) {
+    } catch (error: unknown) {
       if (isMountedRef.current) {
-        setErrorMsg(e instanceof Error ? e.message : 'System Error.');
+        setErrorMsg(error instanceof Error ? error.message : 'System Error.');
       }
     } finally {
       if (isMountedRef.current) {
@@ -162,7 +162,7 @@ const EngineCore: React.FC = () => {
               <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-gold to-gold2 transition-all duration-1000"
-                  style={{ width: `${currentScore}%` }}
+                  style={{ width: `${currentScore}%` } as React.CSSProperties}
                 />
               </div>
               <span className="font-mono text-gold text-sm font-bold">{currentScore}%</span>
