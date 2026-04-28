@@ -70,7 +70,7 @@ export const streamLogisticsAnalysis = async (
   const { onToken, onStall } = callbacks;
 
   try {
-    console.log(`[Core-4] Initiating ${mode} stream with gemini-1.5-flash-latest...`);
+    console.log(`[Core-4] Initiating ${mode} stream with gemini-1.5-flash...`);
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     const prompt = buildPrompt(query, university, mode, attempt > 1);
     const result = await model.generateContentStream(prompt);
