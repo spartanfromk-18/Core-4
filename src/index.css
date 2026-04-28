@@ -42,6 +42,55 @@ body {
   -webkit-font-smoothing: antialiased;
   margin: 0;
   padding: 0;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  right: -10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.08) 0%, transparent 70%);
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+  animation: float 20s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-10%, 15%); }
+}
+
+.fc {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-r2);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.fc:hover {
+  border-color: rgba(201, 168, 76, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.logic-pulse {
+  animation: logic-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes logic-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(0.98); }
+}
+
+.glass-panel {
+  background: rgba(8, 11, 20, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* CANVAS TEXTURE */

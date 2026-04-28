@@ -32,6 +32,8 @@ export const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
     return () => clearInterval(interval);
   }, [onComplete]);
 
+  const progress = (lines.length / bootLines.length) * 100;
+
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-center items-center bg-ink">
       <div className="glass-panel p-8 rounded-lg max-w-lg w-full logic-pulse">
@@ -40,7 +42,7 @@ export const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
           <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
         </div>
-        <div className="font-mono text-green-400 text-sm h-64 flex flex-col justify-end overflow-hidden">
+        <div className="font-mono text-green-400 text-sm h-64 flex flex-col justify-end overflow-hidden mb-6">
           {lines.map((line, idx) => (
             <motion.div 
               key={idx}
@@ -48,7 +50,7 @@ export const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
               animate={{ opacity: 1, y: 0 }}
               className="terminal-text mb-2"
             >
-              {`> ${line}`}
+              <span className="text-gold opacity-50">[{new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}]</span> {`> ${line}`}
             </motion.div>
           ))}
           {lines.length < bootLines.length && (
@@ -60,6 +62,19 @@ export const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
               _
             </motion.div>
           )}
+        </div>
+
+        <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+          <motion.div 
+            className="h-full bg-gold"
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ ease: "linear" }}
+          />
+        </div>
+        <div className="mt-2 flex justify-between font-mono text-[10px] text-text3 uppercase tracking-widest">
+          <span>Bootloader v4.0.2</span>
+          <span>{Math.round(progress)}%</span>
         </div>
       </div>
     </div>

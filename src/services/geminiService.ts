@@ -35,13 +35,24 @@ const isResponseRelevant = (text: string, university: string): boolean => {
   return keywords.some(kw => lower.includes(kw));
 };
 
-const buildPrompt = (query: string, university: string, isRetry = false): string => {
+export type AnalysisMode = 'normal' | 'sheet-filler' | 'diagram-architect';
+
+const MODE_INSTRUCTIONS: Record<AnalysisMode, string> = {
+  normal: 'Dissect the syllabus and exam logistics with precision.',
+  'sheet-filler': 'Structure the answer for a 10-mark university exam question. Use bold headings, bullet points, and ensure the content is optimized for filling exam sheets effectively.',
+  'diagram-architect': 'Create a detailed logic walkthrough. Include a Mermaid.js diagram code block representing the architecture or flow of the concept. Ensure the diagram is hand-drawable and simple but technically accurate.'
+};
+
+const buildPrompt = (query: string, university: string, mode: AnalysisMode = 'normal', isRetry = false): string => {
   const retryPrefix = isRetry
     ? `IMPORTANT: Your previous response was too generic. You MUST focus EXCLUSIVELY on ${university}. ` +
       `Include ${university}-specific exam patterns, marking schemes, and syllabus structures. ` +
       `Do NOT give generic advice.\n\n`
     : '';
-  return `${retryPrefix}${EXAMINER_PERSONA}\n\nTarget University: ${university}\nQuery: ${query}\n\nInitiate deep analysis:`;
+  
+  const modeInstruction = MODE_INSTRUCTIONS[mode];
+
+  return `${retryPrefix}${EXAMINER_PERSONA}\n\nTarget University: ${university}\nMode: ${mode}\nInstruction: ${modeInstruction}\nQuery: ${query}\n\nInitiate deep analysis:`;
 };
 
 export interface StreamCallbacks {
@@ -53,14 +64,15 @@ export const streamLogisticsAnalysis = async (
   query: string,
   university: string,
   callbacks: StreamCallbacks,
+  mode: AnalysisMode = 'normal',
   attempt = 1
 ): Promise<{ fullText: string; confidenceScore: number }> => {
   const { onToken, onStall } = callbacks;
 
   try {
-    console.log("[Core-4] Initiating stream with gemini-1.5-flash-latest...");
+    console.log(`[Core-4] Initiating ${mode} stream with gemini-1.5-flash-latest...`);
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
-    const prompt = buildPrompt(query, university, attempt > 1);
+    const prompt = buildPrompt(query, university, mode, attempt > 1);
     const result = await model.generateContentStream(prompt);
 
     let fullText = '';
@@ -88,7 +100,7 @@ export const streamLogisticsAnalysis = async (
       console.warn(`[Core-4] Response not university-specific for ${university}. Auto-retrying with refined prompt...`);
       // Clear current output and retry
       onToken('\n\n> System: Refining query context for ' + university + '...\n\n');
-      return streamLogisticsAnalysis(query, university, callbacks, 2);
+      return streamLogisticsAnalysis(query, university, callbacks, mode, 2);
     }
 
     // Extract Confidence Score

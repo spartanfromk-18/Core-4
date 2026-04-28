@@ -3,8 +3,8 @@ import { LettaDock } from './LettaDock';
 import { SystemHUD } from './SystemHUD';
 import { ErrorBoundary } from './ErrorBoundary';
 import { useSearchHistory } from '../hooks/useSearchHistory';
-import { streamLogisticsAnalysis } from '../services/geminiService';
-import { Terminal, Send, Activity, ShieldAlert, Cpu } from 'lucide-react';
+import { streamLogisticsAnalysis, AnalysisMode } from '../services/geminiService';
+import { Terminal, Send, Activity, ShieldAlert, Cpu, Copy, Check, Layout, FileText, Share2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 const EngineCore: React.FC = () => {
@@ -15,6 +15,8 @@ const EngineCore: React.FC = () => {
   const [currentOutput, setCurrentOutput] = useState('');
   const [currentScore, setCurrentScore] = useState<number | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [mode, setMode] = useState<AnalysisMode>('normal');
+  const [copied, setCopied] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   // Track mounted state to prevent setState after unmount (memory safety)
@@ -56,7 +58,8 @@ const EngineCore: React.FC = () => {
           onStall: () => {
             if (isMountedRef.current) setStreamStallDetected(true);
           },
-        }
+        },
+        mode
       );
 
       if (isMountedRef.current) {
@@ -101,10 +104,40 @@ const EngineCore: React.FC = () => {
           <div className="flex items-center gap-3 mb-6 border-b border-border-main pb-4">
             <Terminal className="text-gold" size={20} />
             <h2 className="font-mono text-sm tracking-widest text-text2 uppercase">Compile Logistics</h2>
-            {isStreaming && <Activity className="ml-auto text-green animate-pulse" size={16} />}
+            
+            <div className="flex items-center gap-2 ml-auto">
+              {(['normal', 'sheet-filler', 'diagram-architect'] as AnalysisMode[]).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setMode(m)}
+                  className={`px-3 py-1 rounded-full text-[10px] font-mono border transition-all ${
+                    mode === m 
+                    ? 'bg-gold/20 border-gold text-gold shadow-[0_0_12px_rgba(201,168,76,0.3)]' 
+                    : 'border-white/10 text-text3 hover:border-white/20'
+                  }`}
+                >
+                  {m.replace('-', ' ').toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            {isStreaming && <Activity className="ml-3 text-green animate-pulse" size={16} />}
           </div>
 
-          <div className="flex-1 overflow-y-auto mb-6 pr-2">
+          <div className="flex-1 overflow-y-auto mb-6 pr-2 relative group">
+            {currentOutput && !isStreaming && (
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(currentOutput);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                className="absolute top-0 right-0 p-2 bg-ink2/80 backdrop-blur rounded-lg border border-white/10 text-text3 hover:text-gold transition-all opacity-0 group-hover:opacity-100"
+                title="Copy Output"
+              >
+                {copied ? <Check size={14} className="text-green" /> : <Copy size={14} />}
+              </button>
+            )}
             {errorMsg ? (
               <div className="flex items-center gap-3 text-red-400 bg-red-400/10 p-4 rounded-lg border border-red-400/20">
                 <ShieldAlert size={20} />
