@@ -71,12 +71,12 @@ export const streamLogisticsAnalysis = async (
   const { onToken, onStall } = callbacks;
 
   try {
-    console.log(`[Core-4] Initiating ${mode} stream with ${modelId} (API: v1beta)...`);
+    console.log(`[Core-4] Initiating ${mode} stream with ${modelId} (API: v1)...`);
     
-    // Using v1beta explicitly for latest features/model support
+    // Switch to stable v1 API
     const model = genAI.getGenerativeModel(
       { model: modelId },
-      { apiVersion: 'v1beta' }
+      { apiVersion: 'v1' }
     );
 
     const prompt = buildPrompt(query, university, mode, attempt > 1);
@@ -119,10 +119,15 @@ export const streamLogisticsAnalysis = async (
     const errorMsg = error?.message || '';
     console.error(`[Core-4] Engine Error:`, errorMsg);
 
-    // Fallback logic if Flash is unavailable in region or Model ID is invalid
-    if ((errorMsg.includes('404') || errorMsg.includes('not found')) && modelId === 'gemini-1.5-flash') {
-      console.warn(`[Core-4] Model ${modelId} not found. Falling back to gemini-1.5-pro...`);
-      return streamLogisticsAnalysis(query, university, callbacks, mode, attempt, 'gemini-1.5-pro');
+    // More aggressive fallback detection for 404/Not Found
+    const isModelError = errorMsg.includes('404') || 
+                        errorMsg.includes('not found') || 
+                        errorMsg.includes('not supported');
+
+    if (isModelError && modelId !== 'gemini-pro') {
+      console.warn(`[Core-4] Model ${modelId} unavailable. Falling back to gemini-pro...`);
+      onToken('\n\n> System: Switching to stable core (gemini-pro)...\n\n');
+      return streamLogisticsAnalysis(query, university, callbacks, mode, attempt, 'gemini-pro');
     }
 
     if (error instanceof Error) {
