@@ -5,9 +5,7 @@ if (!apiKey) {
   console.error("[Core-4] CRITICAL: VITE_GEMINI_API_KEY is missing from environment variables.");
 }
 
-const genAI = new GoogleGenerativeAI(apiKey, {
-  apiVersion: 'v1beta',
-});
+const genAI = new GoogleGenerativeAI(apiKey);
 
 // System Instructions - The "Core" identity of the engine
 const SYSTEM_INSTRUCTION = `You are a Senior External Examiner for top-tier Indian universities (AKTU, SPPU, VJTI). 
@@ -78,7 +76,7 @@ export const streamLogisticsAnalysis = async (
         { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
         { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
       ],
-    });
+    }, { apiVersion: 'v1beta' });
 
     const modeInstruction = MODE_INSTRUCTIONS[mode];
     const retryPrefix = attempt > 1 ? `CRITICAL RETRY: Previous response lacked ${university} specificity. DO NOT BE GENERIC.\n` : '';
