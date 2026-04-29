@@ -124,6 +124,12 @@ export const streamLogisticsAnalysis = async (
     const errorMsg = error?.message || '';
     console.error(`[Core-4] Engine Fault:`, errorMsg);
 
+    const isRateLimit = errorMsg.includes('429') || errorMsg.includes('Too Many Requests') || errorMsg.includes('quota');
+
+    if (isRateLimit) {
+      throw new Error('Rate limit reached. Please wait 30 seconds before trying again.');
+    }
+
     const isModelError = errorMsg.includes('404') || errorMsg.includes('not found');
 
     if (isModelError && modelId !== 'gemini-2.0-flash-lite') {
