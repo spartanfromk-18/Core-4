@@ -5,7 +5,9 @@ if (!apiKey) {
   console.error("[Core-4] CRITICAL: VITE_GEMINI_API_KEY is missing from environment variables.");
 }
 
-const genAI = new GoogleGenerativeAI(apiKey);
+const genAI = new GoogleGenerativeAI(apiKey, {
+  apiVersion: 'v1beta',
+});
 
 // System Instructions - The "Core" identity of the engine
 const SYSTEM_INSTRUCTION = `You are a Senior External Examiner for top-tier Indian universities (AKTU, SPPU, VJTI). 
@@ -124,11 +126,12 @@ export const streamLogisticsAnalysis = async (
     const errorMsg = error?.message || '';
     console.error(`[Core-4] Engine Fault:`, errorMsg);
 
-    // Fallback logic for regional/versioning issues
-    if ((errorMsg.includes('404') || errorMsg.includes('not found')) && modelId !== 'gemini-1.5-flash') {
-      console.warn(`[Core-4] ${modelId} unavailable. Falling back to 1.5-flash...`);
-      onToken('\n\n> System: Dynamic model adjustment (1.5-flash)...\n\n');
-      return streamLogisticsAnalysis(query, university, callbacks, mode, attempt, 'gemini-1.5-flash');
+    const isModelError = errorMsg.includes('404') || errorMsg.includes('not found');
+
+    if (isModelError && modelId !== 'gemini-2.0-flash-lite') {
+      console.warn(`[Core-4] Model ${modelId} unavailable. Falling back to gemini-2.0-flash-lite...`);
+      onToken('\n\n> System: Switching to stable core (gemini-2.0-flash-lite)...\n\n');
+      return streamLogisticsAnalysis(query, university, callbacks, mode, attempt, 'gemini-2.0-flash-lite');
     }
 
     throw new Error(`System Error: ${errorMsg || 'Node Congestion detected.'}`);
